@@ -5,7 +5,7 @@
     android:id="@+id/activity_app_net_stream"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.smuthuvijayan.rxsample.AppNetStreamActivity">
+    tools:context="com.example.smuthuvijayan.rxsample.activity.AppNetStreamActivity">
 
     <TextView
         android:layout_width="wrap_content"
