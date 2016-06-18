@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_view_padding">2dp</dimen>
     <dimen name="timestamp_margin">2dp</dimen>
+    <dimen name="avatar_image_width">100dp</dimen>
+    <dimen name="avatar_image_height">100dp</dimen>
 </resources>

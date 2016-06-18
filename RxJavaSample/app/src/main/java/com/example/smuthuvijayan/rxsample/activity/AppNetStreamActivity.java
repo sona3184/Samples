@@ -12,6 +12,7 @@ import com.example.smuthuvijayan.rxsample.model.AppNetData;
 import com.example.smuthuvijayan.rxsample.model.Datum;
 import com.example.smuthuvijayan.rxsample.rest.AppNetRestService;
 import com.example.smuthuvijayan.rxsample.rest.RestServiceFactory;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -34,9 +35,7 @@ public class AppNetStreamActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_net_stream);
-        ButterKnife.setDebug(true);
         ButterKnife.bind(this);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageCardList.setLayoutManager(layoutManager);

@@ -1,6 +1,7 @@
 package com.example.smuthuvijayan.rxsample.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import com.example.smuthuvijayan.rxsample.R;
 import com.example.smuthuvijayan.rxsample.model.Datum;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -38,10 +41,13 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
 
     @Override
     public void onBindViewHolder(AppNetMessageHolder appNetMessageHolder, int position) {
-        Datum datum = data.get(position);
+        final Datum datum = data.get(position);
         appNetMessageHolder.tvMessageText.setText(datum.getText());
         appNetMessageHolder.tvTimestamp.setText(datum.getCreatedAt());
         appNetMessageHolder.tvUsername.setText(datum.getUser().getUsername());
+        Picasso.with(appNetMessageHolder.ivUserAvatar.getContext())
+                .load(datum.getUser().getAvatarImage().getUrl())
+                .into(appNetMessageHolder.ivUserAvatar);
     }
 
     @Override
