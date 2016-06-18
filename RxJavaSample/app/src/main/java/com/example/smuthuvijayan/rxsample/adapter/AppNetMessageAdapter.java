@@ -54,23 +54,14 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
     }
 
     public static class AppNetMessageHolder extends RecyclerView.ViewHolder {
-        /*@BindView(R.id.ivUserAvatar) ImageView ivUserAvatar;
+        @BindView(R.id.ivUserAvatar) ImageView ivUserAvatar;
         @BindView(R.id.tvUsername) TextView tvUsername;
         @BindView(R.id.tvMessageText) TextView tvMessageText;
-        @BindView(R.id.tvTimestamp) TextView tvTimestamp;*/
-
-        ImageView ivUserAvatar;
-        TextView tvUsername;
-        TextView tvMessageText;
-        TextView tvTimestamp;
+        @BindView(R.id.tvTimestamp) TextView tvTimestamp;
 
         public AppNetMessageHolder(View view) {
             super(view);
-            //ButterKnife.bind(this, view);
-            ivUserAvatar = (ImageView) view.findViewById(R.id.ivUserAvatar);
-            tvUsername = (TextView) view.findViewById(R.id.tvUsername);
-            tvMessageText = (TextView) view.findViewById(R.id.tvMessageText);
-            tvTimestamp = (TextView) view.findViewById(R.id.tvTimestamp);
+            ButterKnife.bind(this, view);
         }
     }
 

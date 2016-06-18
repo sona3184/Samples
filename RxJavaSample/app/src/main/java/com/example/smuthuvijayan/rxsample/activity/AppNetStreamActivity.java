@@ -27,22 +27,21 @@ public class AppNetStreamActivity extends AppCompatActivity {
 
     private static final String TAG = "AppNetSreamActivity";
 
-    //@BindView(R.id.message_card_list) RecyclerView messageCardList;
-    RecyclerView messageCardList;
+    @BindView(R.id.message_card_list) RecyclerView messageCardList;
     AppNetMessageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_net_stream);
+        ButterKnife.setDebug(true);
         ButterKnife.bind(this);
 
-        RecyclerView messageCardList = (RecyclerView) findViewById(R.id.message_card_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageCardList.setLayoutManager(layoutManager);
 
-        adapter = new AppNetMessageAdapter(new ArrayList<>(20));
+        adapter = new AppNetMessageAdapter(new ArrayList<Datum>(20));
         messageCardList.setAdapter(adapter);
     }
 
@@ -56,8 +55,8 @@ public class AppNetStreamActivity extends AppCompatActivity {
         final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
                                                                                     AppNetRestService.APP_NET_SERVICE_ENDPOINT);
 
-        Observable.interval(5, TimeUnit.SECONDS, Schedulers.io())
-                .map(tick -> appNetService.getGlobalMessages());
+       /* Observable.interval(5, TimeUnit.SECONDS, Schedulers.io())
+                .map(tick -> appNetService.getGlobalMessages());*/
         appNetService.getGlobalMessages()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
