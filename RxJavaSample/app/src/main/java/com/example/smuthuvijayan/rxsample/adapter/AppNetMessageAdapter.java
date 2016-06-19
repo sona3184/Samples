@@ -9,12 +9,17 @@ import android.widget.TextView;
 
 import com.example.smuthuvijayan.rxsample.R;
 import com.example.smuthuvijayan.rxsample.model.Datum;
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.smuthuvijayan.rxsample.Util.getLongFromTimeString;
 
 /**
  * Created by smuthuvijayan on 6/18/16.
@@ -40,12 +45,12 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
     @Override
     public void onBindViewHolder(AppNetMessageHolder appNetMessageHolder, int position) {
         final Datum datum = data.get(position);
-        appNetMessageHolder.tvMessageText.setText(datum.getText());
-        appNetMessageHolder.tvTimestamp.setText(datum.getCreatedAt());
-        appNetMessageHolder.tvUsername.setText(datum.getUser().getUsername());
         Picasso.with(appNetMessageHolder.ivUserAvatar.getContext())
                 .load(datum.getUser().getAvatarImage().getUrl())
                 .into(appNetMessageHolder.ivUserAvatar);
+        appNetMessageHolder.tvMessageText.setText(datum.getText());
+        appNetMessageHolder.tvUsername.setText(datum.getUser().getUsername());
+        appNetMessageHolder.tvTimestamp.setReferenceTime(getLongFromTimeString(datum.getCreatedAt()));
     }
 
     @Override
@@ -61,7 +66,7 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
         @BindView(R.id.ivUserAvatar) ImageView ivUserAvatar;
         @BindView(R.id.tvUsername) TextView tvUsername;
         @BindView(R.id.tvMessageText) TextView tvMessageText;
-        @BindView(R.id.tvTimestamp) TextView tvTimestamp;
+        @BindView(R.id.tvTimestamp) RelativeTimeTextView tvTimestamp;
 
         public AppNetMessageHolder(View view) {
             super(view);

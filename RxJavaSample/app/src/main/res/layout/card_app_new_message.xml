@@ -47,7 +47,7 @@
             android:paddingTop="@dimen/textview_padding_bottom_top"
             android:text="Message Text..." />
 
-        <TextView
+        <com.github.curioustechizen.ago.RelativeTimeTextView
             android:id="@+id/tvTimestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
