@@ -1,6 +1,7 @@
 package com.example.smuthuvijayan.rxsample;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 
 /**
@@ -10,6 +11,6 @@ import org.joda.time.DateTime;
 public class Util {
 
     public static long getLongFromTimeString(String time) {
-        return DateTime.parse(time).getMillis();
+        return DateTime.parse(time).withZone(DateTimeZone.forID("US/Pacific")).getMillis();
     }
 }

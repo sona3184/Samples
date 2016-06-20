@@ -60,6 +60,7 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
 
     public void addData(List<Datum> newData) {
         data.addAll(0, newData);
+        notifyDataSetChanged();
     }
 
     public static class AppNetMessageHolder extends RecyclerView.ViewHolder {
