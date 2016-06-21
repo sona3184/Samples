@@ -63,6 +63,11 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
         notifyDataSetChanged();
     }
 
+    public void addData(Datum newDatum) {
+        data.add(0, newDatum);
+        notifyDataSetChanged();
+    }
+
     public static class AppNetMessageHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivUserAvatar) ImageView ivUserAvatar;
         @BindView(R.id.tvUsername) TextView tvUsername;
