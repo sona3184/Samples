@@ -1,7 +1,7 @@
 package com.example.smuthuvijayan.rxsample.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,14 +12,13 @@ import com.example.smuthuvijayan.rxsample.model.AppNetData;
 import com.example.smuthuvijayan.rxsample.model.Datum;
 import com.example.smuthuvijayan.rxsample.rest.AppNetRestService;
 import com.example.smuthuvijayan.rxsample.rest.RestServiceFactory;
-import com.squareup.picasso.Picasso;
+
+import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -36,6 +35,7 @@ public class AppNetStreamActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_net_stream);
         ButterKnife.bind(this);
+        JodaTimeAndroid.init(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageCardList.setLayoutManager(layoutManager);

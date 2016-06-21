@@ -3,6 +3,14 @@ apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
+    signingConfigs {
+        signing_config {
+            keyAlias 'RxSample application key'
+            keyPassword 'Muthuvso#1129'
+            storeFile file('/Users/smuthuvijayan/Desktop/RxSamplePublishingKey/rxsample.jks')
+            storePassword 'Muthuvso#1129'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
     defaultConfig {

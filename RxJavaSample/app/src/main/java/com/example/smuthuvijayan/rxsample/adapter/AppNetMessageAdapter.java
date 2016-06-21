@@ -12,8 +12,6 @@ import com.example.smuthuvijayan.rxsample.model.Datum;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.squareup.picasso.Picasso;
 
-import org.joda.time.DateTime;
-
 import java.util.List;
 
 import butterknife.BindView;
