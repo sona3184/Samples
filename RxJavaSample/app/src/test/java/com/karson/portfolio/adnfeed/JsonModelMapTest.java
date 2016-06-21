@@ -1,14 +1,10 @@
-package com.example.smuthuvijayan.rxsample;
+package com.karson.portfolio.adnfeed;
 
-import com.example.smuthuvijayan.rxsample.model.AppNetData;
-import com.example.smuthuvijayan.rxsample.model.Datum;
+import com.karson.portfolio.adnfeed.model.AppNetData;
+import com.karson.portfolio.adnfeed.model.Datum;
 import com.google.gson.Gson;
 
 import org.junit.Test;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStream;
 
 import static org.junit.Assert.*;
 

@@ -1,6 +1,6 @@
-package com.example.smuthuvijayan.rxsample.rest;
+package com.karson.portfolio.adnfeed.rest;
 
-import com.example.smuthuvijayan.rxsample.model.AppNetData;
+import com.karson.portfolio.adnfeed.model.AppNetData;
 
 import retrofit2.http.GET;
 import rx.Observable;

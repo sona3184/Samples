@@ -1,4 +1,4 @@
-package com.example.smuthuvijayan.rxsample.adapter;
+package com.karson.portfolio.adnfeed.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.smuthuvijayan.rxsample.R;
-import com.example.smuthuvijayan.rxsample.model.Datum;
+import com.karson.portfolio.adnfeed.R;
+import com.karson.portfolio.adnfeed.model.Datum;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.squareup.picasso.Picasso;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.smuthuvijayan.rxsample.Util.getLongFromTimeString;
+import static com.karson.portfolio.adnfeed.Util.getLongFromTimeString;
 
 /**
  * Created by smuthuvijayan on 6/18/16.

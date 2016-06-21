@@ -1,20 +1,24 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'io.fabric'
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 android {
     signingConfigs {
         signing_config {
-            keyAlias 'RxSample application key'
+            keyAlias 'rxSampleKey'
             keyPassword 'Muthuvso#1129'
-            storeFile file('/Users/smuthuvijayan/Desktop/RxSamplePublishingKey/rxsample.jks')
+            storeFile file('/Users/smuthuvijayan/Desktop/RxSample App Release Stuff/rxSampleKey.jks')
             storePassword 'Muthuvso#1129'
         }
     }
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
     defaultConfig {
-        applicationId "com.example.smuthuvijayan.rxsample"
+        applicationId "com.karson.portfolio.adnfeed"
         minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
@@ -30,6 +34,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+            signingConfig signingConfigs.signing_config
+        }
+        debug {
+            zipAlignEnabled true
         }
     }
 }
@@ -54,4 +63,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.curioustechizen.android-ago:library:1.3.2'
     compile 'net.danlew:android.joda:2.9.3.1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
+        transitive = true;
+    }
 }
+

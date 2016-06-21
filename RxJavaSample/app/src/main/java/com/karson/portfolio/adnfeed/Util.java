@@ -1,4 +1,4 @@
-package com.example.smuthuvijayan.rxsample;
+package com.karson.portfolio.adnfeed;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;

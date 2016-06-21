@@ -1,5 +1,5 @@
 
-package com.example.smuthuvijayan.rxsample.model;
+package com.karson.portfolio.adnfeed.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,4 +1,4 @@
-package com.example.smuthuvijayan.rxsample.activity;
+package com.karson.portfolio.adnfeed.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,12 +6,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.example.smuthuvijayan.rxsample.R;
-import com.example.smuthuvijayan.rxsample.adapter.AppNetMessageAdapter;
-import com.example.smuthuvijayan.rxsample.model.AppNetData;
-import com.example.smuthuvijayan.rxsample.model.Datum;
-import com.example.smuthuvijayan.rxsample.rest.AppNetRestService;
-import com.example.smuthuvijayan.rxsample.rest.RestServiceFactory;
+import com.crashlytics.android.Crashlytics;
+import com.karson.portfolio.adnfeed.R;
+import com.karson.portfolio.adnfeed.adapter.AppNetMessageAdapter;
+import com.karson.portfolio.adnfeed.model.AppNetData;
+import com.karson.portfolio.adnfeed.model.Datum;
+import com.karson.portfolio.adnfeed.rest.AppNetRestService;
+import com.karson.portfolio.adnfeed.rest.RestServiceFactory;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -36,6 +38,7 @@ public class AppNetStreamActivity extends AppCompatActivity {
         setContentView(R.layout.activity_app_net_stream);
         ButterKnife.bind(this);
         JodaTimeAndroid.init(this);
+        Fabric.with(this, new Crashlytics());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageCardList.setLayoutManager(layoutManager);
@@ -54,8 +57,6 @@ public class AppNetStreamActivity extends AppCompatActivity {
         final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
                                                                                     AppNetRestService.APP_NET_SERVICE_ENDPOINT);
 
-       /* Observable.interval(5, TimeUnit.SECONDS, Schedulers.io())
-                .map(tick -> appNetService.getGlobalMessages());*/
         appNetService.getGlobalMessages()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

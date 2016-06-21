@@ -1,5 +1,5 @@
 
-package com.example.smuthuvijayan.rxsample.model;
+package com.karson.portfolio.adnfeed.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Generated from http://www.jsonschema2pojo.org/
  */
-public class CoverImage {
+public class AvatarImage {
 
     @SerializedName("url")
     @Expose
@@ -25,7 +25,7 @@ public class CoverImage {
     /**
      * No args constructor for use in serialization
      */
-    public CoverImage() {
+    public AvatarImage() {
     }
 
     /**
@@ -34,7 +34,7 @@ public class CoverImage {
      * @param width
      * @param url
      */
-    public CoverImage(String url, Integer width, Boolean isDefault, Integer height) {
+    public AvatarImage(String url, Integer width, Boolean isDefault, Integer height) {
         this.url = url;
         this.width = width;
         this.isDefault = isDefault;

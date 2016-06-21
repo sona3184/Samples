@@ -1,5 +1,5 @@
 
-package com.example.smuthuvijayan.rxsample.model;
+package com.karson.portfolio.adnfeed.model;
 
 import java.util.ArrayList;
 import java.util.List;

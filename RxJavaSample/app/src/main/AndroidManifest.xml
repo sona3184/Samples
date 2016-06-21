@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.smuthuvijayan.rxsample"
+    package="com.karson.portfolio.adnfeed"
     android:versionCode="1"
     android:versionName="alpha"
     android:installLocation="auto">
@@ -13,13 +13,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.AppNetStreamActivity">
+        <activity android:name="com.karson.portfolio.adnfeed.activity.AppNetStreamActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="0bccdcd0f2e5b4067603e7fbce125d64e3d1abe0"
+            />
     </application>
 
 </manifest>

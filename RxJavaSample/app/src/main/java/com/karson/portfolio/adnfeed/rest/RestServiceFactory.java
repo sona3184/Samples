@@ -1,4 +1,4 @@
-package com.example.smuthuvijayan.rxsample.rest;
+package com.karson.portfolio.adnfeed.rest;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

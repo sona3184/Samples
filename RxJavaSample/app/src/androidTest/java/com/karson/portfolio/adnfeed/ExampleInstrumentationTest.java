@@ -1,4 +1,4 @@
-package com.example.smuthuvijayan.rxsample;
+package com.karson.portfolio.adnfeed;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -24,6 +24,6 @@ public class ExampleInstrumentationTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.smuthuvijayan.rxsample", appContext.getPackageName());
+        assertEquals("com.karson.portfolio.adnfeed", appContext.getPackageName());
     }
 }
