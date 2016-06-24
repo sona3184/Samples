@@ -8,8 +8,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.common.collect.EvictingQueue;
+import com.karson.portfolio.adnfeed.model.AppNetData;
 import com.karson.portfolio.adnfeed.model.AppNetRowData;
 import com.karson.portfolio.adnfeed.model.AppNetRowDataBus;
+import com.karson.portfolio.adnfeed.model.Datum;
+import com.karson.portfolio.adnfeed.rest.AppNetRestService;
+import com.karson.portfolio.adnfeed.rest.RestServiceFactory;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -17,6 +21,9 @@ import org.joda.time.DateTimeZone;
 import java.util.Queue;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
@@ -45,7 +52,8 @@ public class AppNetService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind called");
-        startSendingDummmyData();
+        //startSendingDummmyData();
+        fetchAppNetData();
         return mBinder;
     }
 
@@ -63,7 +71,6 @@ public class AppNetService extends Service {
         }
     }
 
-    /*
     protected void fetchAppNetData() {
         final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
                 AppNetRestService.APP_NET_SERVICE_ENDPOINT);
@@ -91,9 +98,14 @@ public class AppNetService extends Service {
                                     + " | " + datum.getText()
                                     + " | " + datum.getUser().getUsername()
                                     + " | " + datum.getUser().getAvatarImage().getUrl());
+                            AppNetRowData rowData = new AppNetRowData(datum.getId(),
+                                                                      datum.getUser().getUsername(),
+                                                                      datum.getText(),
+                                                                      datum.getUser().getAvatarImage().getUrl(),
+                                                                      datum.getCreatedAt());
+                            AppNetRowDataBus.instanceOf().addAppNetRowData(rowData);
                         }
                     }
                 });
     }
-     */
 }
