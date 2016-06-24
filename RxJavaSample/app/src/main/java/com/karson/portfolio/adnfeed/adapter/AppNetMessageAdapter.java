@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.karson.portfolio.adnfeed.R;
-import com.karson.portfolio.adnfeed.model.Datum;
+import com.karson.portfolio.adnfeed.model.AppNetRowData;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.squareup.picasso.Picasso;
 
@@ -25,9 +25,9 @@ import static com.karson.portfolio.adnfeed.Util.getLongFromTimeString;
 
 public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdapter.AppNetMessageHolder> {
 
-    private List<Datum> data;
+    private List<AppNetRowData> data;
 
-    public AppNetMessageAdapter(List<Datum> data) {
+    public AppNetMessageAdapter(List<AppNetRowData> data) {
         this.data = data;
     }
 
@@ -42,13 +42,13 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
 
     @Override
     public void onBindViewHolder(AppNetMessageHolder appNetMessageHolder, int position) {
-        final Datum datum = data.get(position);
+        final AppNetRowData datum = data.get(position);
         Picasso.with(appNetMessageHolder.ivUserAvatar.getContext())
-                .load(datum.getUser().getAvatarImage().getUrl())
+                .load(datum.getAvatarUrl())
                 .into(appNetMessageHolder.ivUserAvatar);
-        appNetMessageHolder.tvMessageText.setText(datum.getText());
-        appNetMessageHolder.tvUsername.setText(datum.getUser().getUsername());
-        appNetMessageHolder.tvTimestamp.setReferenceTime(getLongFromTimeString(datum.getCreatedAt()));
+        appNetMessageHolder.tvMessageText.setText(datum.getPostText());
+        appNetMessageHolder.tvUsername.setText(datum.getUsername());
+        appNetMessageHolder.tvTimestamp.setReferenceTime(getLongFromTimeString(datum.getTimeStamp()));
     }
 
     @Override
@@ -56,12 +56,12 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
         return data.size();
     }
 
-    public void addData(List<Datum> newData) {
+    public void addData(List<AppNetRowData> newData) {
         data.addAll(0, newData);
         notifyDataSetChanged();
     }
 
-    public void addData(Datum newDatum) {
+    public void addData(AppNetRowData newDatum) {
         data.add(0, newDatum);
         notifyDataSetChanged();
     }

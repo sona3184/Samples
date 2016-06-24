@@ -1,6 +1,11 @@
 package com.karson.portfolio.adnfeed.activity;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,18 +14,20 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.karson.portfolio.adnfeed.R;
 import com.karson.portfolio.adnfeed.adapter.AppNetMessageAdapter;
-import com.karson.portfolio.adnfeed.model.AppNetData;
+import com.karson.portfolio.adnfeed.model.AppNetRowData;
+import com.karson.portfolio.adnfeed.model.AppNetRowDataBus;
 import com.karson.portfolio.adnfeed.model.Datum;
-import com.karson.portfolio.adnfeed.rest.AppNetRestService;
-import com.karson.portfolio.adnfeed.rest.RestServiceFactory;
+import com.karson.portfolio.adnfeed.service.AppNetService;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -30,7 +37,13 @@ public class AppNetStreamActivity extends AppCompatActivity {
     private static final String TAG = "AppNetSreamActivity";
 
     @BindView(R.id.message_card_list) RecyclerView messageCardList;
+
     AppNetMessageAdapter adapter;
+
+    Observable<AppNetRowData> appNetTopic;
+
+
+    boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,47 +56,50 @@ public class AppNetStreamActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageCardList.setLayoutManager(layoutManager);
 
-        adapter = new AppNetMessageAdapter(new ArrayList<Datum>(20));
+        adapter = new AppNetMessageAdapter(new ArrayList<AppNetRowData>());
         messageCardList.setAdapter(adapter);
+        Intent intent = new Intent(this, AppNetService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        fetchAppNetData();
+        AppNetRowDataBus.instanceOf().getStringObservable().subscribe(appNetRowData -> {
+            Log.i(TAG, "Received data from event bus : " + appNetRowData.getId());
+            adapter.addData(appNetRowData);
+        }, throwable -> {
+            Log.e(TAG, "Error receiving data on event bus", throwable);
+        });
     }
 
-    protected void fetchAppNetData() {
-        final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
-                                                                                    AppNetRestService.APP_NET_SERVICE_ENDPOINT);
-
-        appNetService.getGlobalMessages()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<AppNetData>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "Data get completed");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(AppNetData appNetData) {
-                        Log.i(TAG, "Received data count = " + appNetData.getData().size());
-                        for(Datum datum : appNetData.getData()) {
-                            Log.i(TAG, datum.getId()
-                                    + " | " + datum.getCreatedAt()
-                                    + " | " + datum.getText()
-                                    + " | " + datum.getUser().getUsername()
-                                    + " | " + datum.getUser().getAvatarImage().getUrl());
-                        }
-                        adapter.addData(appNetData.getData());
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unbind from the service
+        if (mBound) {
+            AppNetRowDataBus.instanceOf().getStringObservable().unsubscribeOn(Schedulers.newThread());
+            unbindService(mConnection);
+            mBound = false;
+        }
     }
+
+    /**
+     * Implement callbacks for service connect/disconnect
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            mBound = true;
+            AppNetService.AppNetServiceBinder binder = (AppNetService.AppNetServiceBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+            appNetTopic.unsubscribeOn(Schedulers.newThread());
+        }
+    };
 }

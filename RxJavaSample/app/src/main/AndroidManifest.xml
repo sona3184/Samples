@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <service android:name=".service.AppNetService" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="0bccdcd0f2e5b4067603e7fbce125d64e3d1abe0"
