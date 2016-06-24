@@ -13,4 +13,12 @@ public class Util {
     public static long getLongFromTimeString(String time) {
         return DateTime.parse(time).withZone(DateTimeZone.forID("US/Pacific")).getMillis();
     }
+
+    public static boolean isNullOrEmpty(String str) {
+        if(str == null || str.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
 }

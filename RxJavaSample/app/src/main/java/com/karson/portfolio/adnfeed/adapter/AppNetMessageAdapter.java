@@ -12,6 +12,7 @@ import com.karson.portfolio.adnfeed.model.AppNetRowData;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,10 +26,10 @@ import static com.karson.portfolio.adnfeed.Util.getLongFromTimeString;
 
 public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdapter.AppNetMessageHolder> {
 
-    private List<AppNetRowData> data;
+    private List<AppNetRowData> data = new ArrayList<>();
 
     public AppNetMessageAdapter(List<AppNetRowData> data) {
-        this.data = data;
+        this.data.addAll(data);
     }
 
     @Override

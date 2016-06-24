@@ -3,6 +3,7 @@ package com.karson.portfolio.adnfeed.rest;
 import com.karson.portfolio.adnfeed.model.AppNetData;
 
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -15,5 +16,8 @@ public interface AppNetRestService {
 
     @GET("/stream/posts/stream/global")
     Observable<AppNetData> getGlobalMessages();
+
+    @GET("/stream/posts/stream/global")
+    Observable<AppNetData> getGlobalMessages(@Query("since_id") String sinceId, @Query("count") Integer count);
 }
 

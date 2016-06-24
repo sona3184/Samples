@@ -19,6 +19,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.util.Queue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -41,6 +44,9 @@ public class AppNetService extends Service {
     private final IBinder mBinder = new AppNetServiceBinder();
 
     Queue<AppNetRowData> appNewRowDataQueue = EvictingQueue.create(MAX_APP_NET_POSTS);
+
+    final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
+                                                            AppNetRestService.APP_NET_SERVICE_ENDPOINT);
 
     public class AppNetServiceBinder extends Binder {
         public AppNetService getService() {
@@ -72,40 +78,46 @@ public class AppNetService extends Service {
     }
 
     protected void fetchAppNetData() {
-        final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
-                AppNetRestService.APP_NET_SERVICE_ENDPOINT);
+        ScheduledExecutorService scheduler =
+                Executors.newSingleThreadScheduledExecutor();
 
-        appNetService.getGlobalMessages()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<AppNetData>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "Data get completed");
+        scheduler.scheduleAtFixedRate
+                (new Runnable() {
+                    public void run() {
+                        appNetService.getGlobalMessages()
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<AppNetData>() {
+                                    @Override
+                                    public void onCompleted() {
+                                        Log.d(TAG, "Data get completed");
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onNext(AppNetData appNetData) {
+                                        Log.i(TAG, "Received data count = " + appNetData.getData().size());
+                                        for(Datum datum : appNetData.getData()) {
+                                            Log.i(TAG, datum.getId()
+                                                    + " | " + datum.getCreatedAt()
+                                                    + " | " + datum.getText()
+                                                    + " | " + datum.getUser().getUsername()
+                                                    + " | " + datum.getUser().getAvatarImage().getUrl());
+                                            AppNetRowData rowData = new AppNetRowData(datum.getId(),
+                                                    datum.getUser().getUsername(),
+                                                    datum.getText(),
+                                                    datum.getUser().getAvatarImage().getUrl(),
+                                                    datum.getCreatedAt());
+                                            AppNetRowDataBus.instanceOf().addAppNetRowData(rowData);
+                                        }
+                                    }
+                                });
                     }
+                }, 0, 2, TimeUnit.SECONDS);
 
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(AppNetData appNetData) {
-                        Log.i(TAG, "Received data count = " + appNetData.getData().size());
-                        for(Datum datum : appNetData.getData()) {
-                            Log.i(TAG, datum.getId()
-                                    + " | " + datum.getCreatedAt()
-                                    + " | " + datum.getText()
-                                    + " | " + datum.getUser().getUsername()
-                                    + " | " + datum.getUser().getAvatarImage().getUrl());
-                            AppNetRowData rowData = new AppNetRowData(datum.getId(),
-                                                                      datum.getUser().getUsername(),
-                                                                      datum.getText(),
-                                                                      datum.getUser().getAvatarImage().getUrl(),
-                                                                      datum.getCreatedAt());
-                            AppNetRowDataBus.instanceOf().addAppNetRowData(rowData);
-                        }
-                    }
-                });
     }
 }
