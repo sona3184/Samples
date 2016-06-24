@@ -1,6 +1,7 @@
 package com.karson.portfolio.adnfeed.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.karson.portfolio.adnfeed.R;
 import com.karson.portfolio.adnfeed.model.AppNetRowData;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
+import com.karson.portfolio.adnfeed.model.Datum;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,6 +27,10 @@ import static com.karson.portfolio.adnfeed.Util.getLongFromTimeString;
  */
 
 public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdapter.AppNetMessageHolder> {
+
+    private static final int MAX_APP_NET_POSTS = 100;
+
+    private static final String TAG = AppNetMessageAdapter.class.getSimpleName();
 
     private List<AppNetRowData> data = new ArrayList<>();
 
@@ -57,14 +63,13 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
         return data.size();
     }
 
-    public void addData(List<AppNetRowData> newData) {
-        data.addAll(0, newData);
-        notifyDataSetChanged();
-    }
-
     public void addData(AppNetRowData newDatum) {
+        if(data.size() >= MAX_APP_NET_POSTS) {
+            data.remove(data.size() - 1);
+        }
         data.add(0, newDatum);
         notifyDataSetChanged();
+        Log.i(TAG, "Adapter data size = " + data.size());
     }
 
     public static class AppNetMessageHolder extends RecyclerView.ViewHolder {
