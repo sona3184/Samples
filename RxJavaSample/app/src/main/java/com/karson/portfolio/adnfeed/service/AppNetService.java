@@ -11,7 +11,6 @@ import com.karson.portfolio.adnfeed.Constants;
 import com.karson.portfolio.adnfeed.Util;
 import com.karson.portfolio.adnfeed.model.AppNetData;
 import com.karson.portfolio.adnfeed.model.AppNetRowData;
-import com.karson.portfolio.adnfeed.model.AppNetRowDataBus;
 import com.karson.portfolio.adnfeed.model.Datum;
 import com.karson.portfolio.adnfeed.model.Meta;
 import com.karson.portfolio.adnfeed.rest.AppNetRestService;
@@ -41,12 +40,12 @@ public class AppNetService extends Service {
 
     private final IBinder mBinder = new AppNetServiceBinder();
 
-    final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
+    private final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
                                                             AppNetRestService.APP_NET_SERVICE_ENDPOINT);
 
     private Meta meta;
 
-    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private volatile ScheduledFuture<?> future;
 
@@ -54,7 +53,6 @@ public class AppNetService extends Service {
         public AppNetService getService() {
             return AppNetService.this;
         }
-
     }
 
     Runnable appNetRowDataSendRunnable = () ->
@@ -76,11 +74,6 @@ public class AppNetService extends Service {
                         public void onNext(List<AppNetRowData> appNetRowDataList) {
                             Log.d(TAG, "Num rows to write to bus = " + appNetRowDataList.size());
                             EventBus.getDefault().post(appNetRowDataList);
-                                        /*for(AppNetRowData rowData : appNetRowDataList) {
-                                            Log.i(TAG, "Adding data with id : " + rowData.getId());
-                                            AppNetRowDataBus.instanceOf().addAppNetRowData(rowData);
-                                            EventBus.getDefault().post(appNetRowDataList)
-                                        }*/
                         }
                     });
 

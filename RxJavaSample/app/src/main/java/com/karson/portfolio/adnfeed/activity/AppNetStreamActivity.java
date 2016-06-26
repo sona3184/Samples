@@ -9,15 +9,11 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.karson.portfolio.adnfeed.R;
 import com.karson.portfolio.adnfeed.adapter.AppNetMessageAdapter;
 import com.karson.portfolio.adnfeed.model.AppNetRowData;
-import com.karson.portfolio.adnfeed.model.AppNetRowDataBus;
-import com.karson.portfolio.adnfeed.model.Datum;
 import com.karson.portfolio.adnfeed.service.AppNetService;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -28,15 +24,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class AppNetStreamActivity extends AppCompatActivity {
 
@@ -75,12 +66,6 @@ public class AppNetStreamActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
-        /*AppNetRowDataBus.instanceOf().getStringObservable().subscribe(appNetRowData -> {
-            Log.i(TAG, "Received data from event bus : " + appNetRowData.getId());
-            adapter.addData(appNetRowData);
-        }, throwable -> {
-            Log.e(TAG, "Error receiving data on event bus", throwable);
-        });*/
     }
 
     @Override
@@ -88,15 +73,13 @@ public class AppNetStreamActivity extends AppCompatActivity {
         super.onDestroy();
         // Unbind from the service
         if (mBound) {
-            //AppNetRowDataBus.instanceOf().getStringObservable().unsubscribeOn(Schedulers.newThread());
             unbindService(mConnection);
             mBound = false;
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void doThis(List<AppNetRowData> appNetRowDataList)
-    {
+    public void doThis(List<AppNetRowData> appNetRowDataList) {
         adapter.addData(appNetRowDataList);
     }
 
