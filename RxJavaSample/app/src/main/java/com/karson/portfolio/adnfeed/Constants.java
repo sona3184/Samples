@@ -5,11 +5,9 @@ package com.karson.portfolio.adnfeed;
  */
 
 public class Constants {
-
     public static final int APP_NET_REQUEST_BATCH_SIZE = 10;
     public static final int APP_NET_REQUEST_DELAY_SEC = 3;
     public static final int MAX_APP_NET_POSTS = 100;
     public static final String LAST_POST_MESSAGE_SHARED_PREF_KEY = "lastPostId";
     public static final String APP_START_LAST_POST_ID = "START";
-    public static final String LATEST_RECEIVED_LAST_POST_ID = "LATEST";
 }

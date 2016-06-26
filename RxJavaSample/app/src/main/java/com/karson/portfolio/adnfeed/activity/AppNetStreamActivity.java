@@ -81,6 +81,7 @@ public class AppNetStreamActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void doThis(List<AppNetRowData> appNetRowDataList) {
         adapter.addData(appNetRowDataList);
+        messageCardList.getLayoutManager().scrollToPosition(0);
     }
 
     /**

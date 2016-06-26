@@ -73,7 +73,9 @@ public class AppNetService extends Service {
                         @Override
                         public void onNext(List<AppNetRowData> appNetRowDataList) {
                             Log.d(TAG, "Num rows to write to bus = " + appNetRowDataList.size());
-                            EventBus.getDefault().post(appNetRowDataList);
+                            if(!appNetRowDataList.isEmpty()) {
+                                EventBus.getDefault().post(appNetRowDataList);
+                            }
                         }
                     });
 
