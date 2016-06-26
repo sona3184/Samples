@@ -97,4 +97,13 @@ public class Meta {
         this.more = more;
     }
 
+    @Override
+    public String toString() {
+        return "Meta{" +
+                "minId='" + minId + '\'' +
+                ", code=" + code +
+                ", maxId='" + maxId + '\'' +
+                ", more=" + more +
+                '}';
+    }
 }
