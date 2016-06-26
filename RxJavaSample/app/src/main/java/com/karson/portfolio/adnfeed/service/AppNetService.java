@@ -17,10 +17,13 @@ import com.karson.portfolio.adnfeed.model.Meta;
 import com.karson.portfolio.adnfeed.rest.AppNetRestService;
 import com.karson.portfolio.adnfeed.rest.RestServiceFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -41,8 +44,11 @@ public class AppNetService extends Service {
     final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
                                                             AppNetRestService.APP_NET_SERVICE_ENDPOINT);
 
-    //private String lastPostID;
     private Meta meta;
+
+    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    private volatile ScheduledFuture<?> future;
 
     public class AppNetServiceBinder extends Binder {
         public AppNetService getService() {
@@ -50,6 +56,33 @@ public class AppNetService extends Service {
         }
 
     }
+
+    Runnable appNetRowDataSendRunnable = () ->
+            convertToAppNetRowData()
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<AppNetRowData>>() {
+                        @Override
+                        public void onCompleted() {
+                            Log.d(TAG, "Data get completed");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "Data get error", e);
+                        }
+
+                        @Override
+                        public void onNext(List<AppNetRowData> appNetRowDataList) {
+                            Log.d(TAG, "Num rows to write to bus = " + appNetRowDataList.size());
+                            EventBus.getDefault().post(appNetRowDataList);
+                                        /*for(AppNetRowData rowData : appNetRowDataList) {
+                                            Log.i(TAG, "Adding data with id : " + rowData.getId());
+                                            AppNetRowDataBus.instanceOf().addAppNetRowData(rowData);
+                                            EventBus.getDefault().post(appNetRowDataList)
+                                        }*/
+                        }
+                    });
 
     @Nullable
     @Override
@@ -59,41 +92,16 @@ public class AppNetService extends Service {
         meta.setMaxId(Util.getFromSharedPref(getApplicationContext(),
                 Constants.LAST_POST_MESSAGE_SHARED_PREF_KEY));
         Log.d(TAG, "lastPostID from shared pref = " + meta.getMaxId());
-
-        fetchAppNetData();
+        future = scheduler.scheduleAtFixedRate(appNetRowDataSendRunnable, 0,
+                                            Constants.APP_NET_REQUEST_DELAY_SEC, TimeUnit.SECONDS);
         return mBinder;
     }
 
-    protected void fetchAppNetData() {
-
-        ScheduledExecutorService scheduler =
-                Executors.newSingleThreadScheduledExecutor();
-
-        Runnable runnable = () ->
-                        convertToAppNetRowData()
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Subscriber<List<AppNetRowData>>() {
-                                    @Override
-                                    public void onCompleted() {
-                                        Log.d(TAG, "Data get completed");
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        Log.e(TAG, "Data get error", e);
-                                    }
-
-                                    @Override
-                                    public void onNext(List<AppNetRowData> appNetRowDataList) {
-                                        Log.d(TAG, "Num rows to write to bus = " + appNetRowDataList.size());
-                                        for(AppNetRowData rowData : appNetRowDataList) {
-                                            Log.i(TAG, "Adding data with id : " + rowData.getId());
-                                            AppNetRowDataBus.instanceOf().addAppNetRowData(rowData);
-                                        }
-                                    }
-                                });
-        scheduler.scheduleAtFixedRate(runnable, 0, Constants.APP_NET_REQUEST_DELAY_SEC, TimeUnit.SECONDS);
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "onUnbind called");
+        future.cancel(true);
+        return super.onUnbind(intent);
     }
 
     protected Observable<List<AppNetRowData>> convertToAppNetRowData() {

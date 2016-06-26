@@ -68,6 +68,14 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
         notifyDataSetChanged();
     }
 
+    public void addData(List<AppNetRowData> newData) {
+        if(data.size() >= Constants.MAX_APP_NET_POSTS) {
+            data.remove(data.subList(data.size() - newData.size(), newData.size()));
+        }
+        data.addAll(0, newData);
+        notifyDataSetChanged();
+    }
+
     public static class AppNetMessageHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivUserAvatar) ImageView ivUserAvatar;
         @BindView(R.id.tvUsername) TextView tvUsername;
