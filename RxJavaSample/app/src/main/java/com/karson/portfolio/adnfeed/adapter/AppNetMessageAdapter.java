@@ -80,7 +80,7 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
      */
     public void addData(List<AppNetRowData> newData) {
         if(data.size() >= Constants.MAX_APP_NET_POSTS) {
-            data.remove(data.subList(data.size() - newData.size(), newData.size()));
+            data.remove(data.subList(data.size() - newData.size(), data.size()));
         }
         data.addAll(0, newData);
         notifyDataSetChanged();
