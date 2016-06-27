@@ -74,6 +74,9 @@ public class AppNetStreamActivity extends AppCompatActivity {
         //Make toolbar behave as an action bar
         setSupportActionBar(toolbar);
 
+        //Register to listen on event bus
+        EventBus.getDefault().register(this);
+
         //Bind to service
         Intent intent = new Intent(this, AppNetService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
@@ -111,21 +114,21 @@ public class AppNetStreamActivity extends AppCompatActivity {
 
     /**
      * Pause activity and unregister from event bus
-     */
+     *//*
     @Override
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
     }
 
-    /**
+    *//**
      * Resume activity and register to event bus
-     */
+     *//*
     @Override
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
-    }
+    }*/
 
     /**
      * Destroy activity and unbind from service
@@ -133,6 +136,7 @@ public class AppNetStreamActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         // Unbind from the service
         if (mBound) {
             unbindService(mConnection);
