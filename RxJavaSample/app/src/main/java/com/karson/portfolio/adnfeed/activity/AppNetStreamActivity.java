@@ -97,10 +97,12 @@ public class AppNetStreamActivity extends AppCompatActivity {
                 //Toggle between resume/pause and call the appropriate method on the iBinder interface
                 if(item.getTitle().equals(getString(R.string.toolbar_menu_pause))) {
                     item.setTitle(getString(R.string.toolbar_menu_resume));
+                    toolbar.setTitle("App.Net Feeds (Paused) ");
                     item.setIcon(getResources().getDrawable(R.mipmap.ic_continue));
                     binder.pause();
                 } else {
                     item.setTitle(getString(R.string.toolbar_menu_pause));
+                    toolbar.setTitle("App.Net Feeds (Live) ");
                     item.setIcon(getResources().getDrawable(R.mipmap.ic_pause));
                     binder.resume();
                 }
@@ -111,24 +113,6 @@ public class AppNetStreamActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * Pause activity and unregister from event bus
-     *//*
-    @Override
-    protected void onPause() {
-        super.onPause();
-        EventBus.getDefault().unregister(this);
-    }
-
-    *//**
-     * Resume activity and register to event bus
-     *//*
-    @Override
-    protected void onResume() {
-        super.onResume();
-        EventBus.getDefault().register(this);
-    }*/
 
     /**
      * Destroy activity and unbind from service
@@ -163,6 +147,7 @@ public class AppNetStreamActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             mBound = true;
+            toolbar.setTitle("App.Net Feeds (Live) ");
             binder = (AppNetService.AppNetServiceBinder) service;
         }
 
