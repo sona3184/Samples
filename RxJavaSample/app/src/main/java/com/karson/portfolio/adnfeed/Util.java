@@ -35,22 +35,4 @@ public class Util {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getString(key, Constants.APP_START_LAST_POST_ID);
     }
-
-    /**
-     * Checks the difference between the last post id in shared preferences and the since_id
-     * of the post received from the server. If the difference is more than 100, just retrieve
-     * the latest from the global stream.
-     */
-    public static boolean shouldResetToLatest(String savedLastPostId, String receivedLastPostId) {
-        boolean retval = false;
-        if(isNullOrEmpty(savedLastPostId)) {
-            retval = true;
-        } else {
-            Long savedId = Long.parseLong(savedLastPostId);
-            Long receivedId = Long.parseLong(receivedLastPostId);
-            if(receivedId - savedId > Constants.MAX_APP_NET_POSTS)
-                retval = true;
-        }
-        return retval;
-    }
 }

@@ -60,6 +60,11 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
         return data.size();
     }
 
+    /**
+     * Add new data item to the top of the list. If list is at max capacity, remove the oldest item
+     * from the bottom of the list and add new item to the top.
+     * @param newDatum
+     */
     public void addData(AppNetRowData newDatum) {
         if(data.size() >= Constants.MAX_APP_NET_POSTS) {
             data.remove(data.size() - 1);
@@ -68,6 +73,11 @@ public class AppNetMessageAdapter extends RecyclerView.Adapter<AppNetMessageAdap
         notifyDataSetChanged();
     }
 
+    /**
+     * Add new data to the top of the list. If list is at max capacity, remove as many items as
+     * received and add new items to the top.
+     * @param newData
+     */
     public void addData(List<AppNetRowData> newData) {
         if(data.size() >= Constants.MAX_APP_NET_POSTS) {
             data.remove(data.subList(data.size() - newData.size(), newData.size()));

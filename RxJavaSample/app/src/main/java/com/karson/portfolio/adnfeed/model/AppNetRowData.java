@@ -4,6 +4,10 @@ package com.karson.portfolio.adnfeed.model;
  * Created by smuthuvijayan on 6/24/16.
  */
 
+/**
+ * A strip down version of AppNetData class with only the fields needed to display the post in the UI
+ * and an ID for tracking purposes
+ */
 public class AppNetRowData {
     String id;
     String username;

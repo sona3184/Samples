@@ -43,14 +43,25 @@ public class AppNetService extends Service {
     private final AppNetRestService appNetService = RestServiceFactory.createRetrofitService(AppNetRestService.class,
                                                             AppNetRestService.APP_NET_SERVICE_ENDPOINT);
 
+    /**
+     * Meta field received in the response to a global stream request. This is used for tracking and
+     * requesting the latest posts using the since_id
+     */
     private Meta meta;
 
+    /**
+     * Scheduler to perform network request and data transformations
+     */
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+    /**
+     * Task returned when operation is queued to scheduler. This is used to cancel task if needed
+     */
     private volatile ScheduledFuture<?> future;
 
-    private Constants.APP_DATA_STREAM_STATE streamState = Constants.APP_DATA_STREAM_STATE.STREAMING;
-
+    /**
+     * Interface returned to activity after binding
+     */
     public class AppNetServiceBinder extends Binder {
         public void pause() {
             pauseStream();
@@ -59,12 +70,11 @@ public class AppNetService extends Service {
         public void resume() {
             resumeStream();
         }
-
-        public AppNetService getService() {
-            return AppNetService.this;
-        }
     }
 
+    /**
+     * Runnable used by the scheduler to perform network and dta transformation operations
+     */
     Runnable appNetRowDataSendRunnable = () ->
             convertToAppNetRowData()
                     .subscribeOn(Schedulers.newThread())
@@ -93,10 +103,13 @@ public class AppNetService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind called");
+
+        //Get the id of the latest post we know of and use it to request newer posts
         meta = new Meta();
         meta.setMaxId(Util.getFromSharedPref(getApplicationContext(),
                 Constants.LAST_POST_MESSAGE_SHARED_PREF_KEY));
         Log.d(TAG, "lastPostID from shared pref = " + meta.getMaxId());
+
         resumeStream();
         return mBinder;
     }
@@ -110,17 +123,20 @@ public class AppNetService extends Service {
 
     protected void pauseStream() {
         Log.d(TAG, "Pause stream");
-        streamState = Constants.APP_DATA_STREAM_STATE.PAUSED;
         future.cancel(true);
     }
 
     protected void resumeStream() {
         Log.d(TAG, "Resume stream");
-        streamState = Constants.APP_DATA_STREAM_STATE.STREAMING;
         future = scheduler.scheduleAtFixedRate(appNetRowDataSendRunnable, 0,
                 Constants.APP_NET_REQUEST_DELAY_SEC, TimeUnit.SECONDS);
     }
 
+    /**
+     * Strip down the AppNetData object to AppNetRowData and write the new posts to the event bus
+     *
+     * @return Observable list if AppNetRowData
+     */
     protected Observable<List<AppNetRowData>> convertToAppNetRowData() {
         return getAppNetDataFromServer()
                 .map(appNetData -> {
@@ -149,7 +165,12 @@ public class AppNetService extends Service {
         Log.i(TAG, "Set saved meta to = " + meta.toString());
     }
 
+    /**
+     * Gets the posts from the server based on the last known latest post
+     * @return
+     */
     protected Observable<AppNetData> getAppNetDataFromServer() {
+        //If we do not have a post id saved, request the latest 20 post
         if(meta.getMaxId().equals(Constants.APP_START_LAST_POST_ID)) {
             Log.d(TAG, "Request last 20");
             return appNetService.getGlobalMessages();
