@@ -9,6 +9,10 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
 import com.karson.portfolio.adnfeed.R;
@@ -35,9 +39,13 @@ public class AppNetStreamActivity extends AppCompatActivity {
 
     @BindView(R.id.message_card_list) RecyclerView messageCardList;
 
+    @BindView(R.id.tool_bar) Toolbar toolbar;
+
     AppNetMessageAdapter adapter;
 
     boolean mBound = false;
+
+    AppNetService.AppNetServiceBinder binder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +58,42 @@ public class AppNetStreamActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         messageCardList.setLayoutManager(layoutManager);
 
-        adapter = new AppNetMessageAdapter(new ArrayList<AppNetRowData>());
+        adapter = new AppNetMessageAdapter(new ArrayList<>());
         messageCardList.setAdapter(adapter);
+
+        setSupportActionBar(toolbar);
+
         Intent intent = new Intent(this, AppNetService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.app_bar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_pause_resume) {
+            Log.d(TAG, "Pause resume button clicked");
+            if(mBound) {
+                if(item.getTitle().equals(getString(R.string.toolbar_menu_pause))) {
+                    item.setTitle(getString(R.string.toolbar_menu_resume));
+                    item.setIcon(getResources().getDrawable(R.mipmap.ic_continue));
+                    binder.pause();
+                } else {
+                    item.setTitle(getString(R.string.toolbar_menu_pause));
+                    item.setIcon(getResources().getDrawable(R.mipmap.ic_pause));
+                    binder.resume();
+                }
+            } else {
+                Log.i(TAG, "Menu button clicked before service bound");
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -93,12 +133,13 @@ public class AppNetStreamActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             mBound = true;
-            AppNetService.AppNetServiceBinder binder = (AppNetService.AppNetServiceBinder) service;
+            binder = (AppNetService.AppNetServiceBinder) service;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             mBound = false;
+            binder = null;
         }
     };
 }

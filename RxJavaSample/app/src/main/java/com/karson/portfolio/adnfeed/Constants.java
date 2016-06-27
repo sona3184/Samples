@@ -5,6 +5,11 @@ package com.karson.portfolio.adnfeed;
  */
 
 public class Constants {
+
+    public enum APP_DATA_STREAM_STATE {
+        STREAMING,
+        PAUSED
+    }
     public static final int APP_NET_REQUEST_BATCH_SIZE = 10;
     public static final int APP_NET_REQUEST_DELAY_SEC = 3;
     public static final int MAX_APP_NET_POSTS = 100;

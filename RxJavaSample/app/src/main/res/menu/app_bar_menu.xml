@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_pause_resume"
+        android:icon="@mipmap/ic_pause"
+        android:title="@string/toolbar_menu_pause"
+        app:showAsAction="ifRoom"/>
+
+</menu>

@@ -49,7 +49,17 @@ public class AppNetService extends Service {
 
     private volatile ScheduledFuture<?> future;
 
+    private Constants.APP_DATA_STREAM_STATE streamState = Constants.APP_DATA_STREAM_STATE.STREAMING;
+
     public class AppNetServiceBinder extends Binder {
+        public void pause() {
+            pauseStream();
+        }
+
+        public void resume() {
+            resumeStream();
+        }
+
         public AppNetService getService() {
             return AppNetService.this;
         }
@@ -87,8 +97,7 @@ public class AppNetService extends Service {
         meta.setMaxId(Util.getFromSharedPref(getApplicationContext(),
                 Constants.LAST_POST_MESSAGE_SHARED_PREF_KEY));
         Log.d(TAG, "lastPostID from shared pref = " + meta.getMaxId());
-        future = scheduler.scheduleAtFixedRate(appNetRowDataSendRunnable, 0,
-                                            Constants.APP_NET_REQUEST_DELAY_SEC, TimeUnit.SECONDS);
+        resumeStream();
         return mBinder;
     }
 
@@ -97,6 +106,19 @@ public class AppNetService extends Service {
         Log.d(TAG, "onUnbind called");
         future.cancel(true);
         return super.onUnbind(intent);
+    }
+
+    protected void pauseStream() {
+        Log.d(TAG, "Pause stream");
+        streamState = Constants.APP_DATA_STREAM_STATE.PAUSED;
+        future.cancel(true);
+    }
+
+    protected void resumeStream() {
+        Log.d(TAG, "Resume stream");
+        streamState = Constants.APP_DATA_STREAM_STATE.STREAMING;
+        future = scheduler.scheduleAtFixedRate(appNetRowDataSendRunnable, 0,
+                Constants.APP_NET_REQUEST_DELAY_SEC, TimeUnit.SECONDS);
     }
 
     protected Observable<List<AppNetRowData>> convertToAppNetRowData() {

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ADN Feed</string>
+    <string name="toolbar_menu_pause">Pause</string>
+    <string name="toolbar_menu_resume">Resume</string>
 </resources>
